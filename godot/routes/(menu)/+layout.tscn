@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://cpgkdwf3n877"]
+
+[ext_resource type="Script" uid="uid://cs0jryfseawlr" path="res://routes/(menu)/+layout.gd" id="1_i3g0c"]
+[ext_resource type="Theme" uid="uid://8yiq3d4vs6ia" path="res://lib/themes/theme.tres" id="1_oj7us"]
+[ext_resource type="Script" uid="uid://c28yn1cv7jfri" path="res://addons/godot-router/scripts/slot.gd" id="3_xydmk"]
+
+[node name="Control" type="Control" unique_id=2063855365]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_oj7us")
+script = ExtResource("1_i3g0c")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=924851254]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.03529412, 0.03529412, 0.043137256, 1)
+
+[node name="RouterSlot" type="Node" parent="." unique_id=905758447]
+script = ExtResource("3_xydmk")
+metadata/_custom_type_script = "uid://c28yn1cv7jfri"
+
+[node name="BackButton" type="Button" parent="." unique_id=2025127947]
+unique_name_in_owner = true
+clip_children = 2
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = -55.0
+offset_right = 78.0
+offset_bottom = -24.0
+grow_vertical = 0
+text = "Back"

@@ -1,0 +1,5 @@
+# allow crawling everything by default
+User-agent: *
+Disallow:
+
+Sitemap: https://github.com/godecosystem/godot-router/sitemap.xml

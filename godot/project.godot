@@ -1,0 +1,41 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Godot Router"
+run/main_scene="uid://bvkf6gtbqmm6s"
+config/features=PackedStringArray("4.6", "Forward Plus")
+config/icon="res://icon.svg"
+
+[autoload]
+
+Router="*res://addons/godot-router/scripts/router.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot-router/plugin.cfg")
+
+[file_customization]
+
+folder_colors={
+"res://routes/": "orange",
+"res://routes/(levels)/": "blue",
+"res://routes/(menu)/": "green",
+"res://routes/loader/": "red"
+}
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+rendering_device/driver.windows="d3d12"

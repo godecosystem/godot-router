@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* default theme */
+@theme {
+	--font-inter: 'Inter', var(--default-font-family);
+
+	/* light mode colors */
+	--color-background: var(--color-zinc-50); /* background */
+	--color-foreground: var(--color-zinc-800); /* default font color */
+	--color-muted-foreground: var(--color-zinc-600); /* muted font color */
+	--color-primary: var(--color-zinc-100); /* color 1 */
+	--color-border: var(--color-zinc-200); /* border color */
+	--color-accent: var(--color-blue-600); /* accent color */
+	--color-destructive: var(--color-red-500);
+
+	--color-secondary: color-mix(
+		in oklch,
+		var(--color-background),
+		var(--color-primary)
+	); /* color 2 */
+}
+
+@layer theme {
+	.dark {
+		/* dark mode colors */
+		--color-background: var(--color-zinc-950); /* background */
+		--color-foreground: var(--color-zinc-200); /* default font color */
+		--color-muted-foreground: var(--color-zinc-400); /* muted font color */
+		--color-primary: var(--color-zinc-900); /* color 1 */
+		--color-border: var(--color-zinc-800); /* border color */
+		--color-accent: var(--color-blue-400); /* accent color */
+	}
+}
+
+@layer utilities {
+	.container {
+		@apply mx-auto max-w-360;
+	}
+}
+
+@layer base {
+	body {
+		@apply bg-background text-foreground font-inter flex min-h-dvh flex-col overflow-x-hidden;
+		scrollbar-color: var(--color-border) var(--color-background);
+	}
+
+	*,
+	*::before,
+	*::after {
+		@apply border-border;
+	}
+
+	:disabled,
+	[aria-disabled='true'] {
+		@apply cursor-default opacity-50;
+	}
+
+	:invalid {
+		@apply border-destructive ring-destructive/50;
+	}
+
+	:focus-visible {
+		@apply border-accent/75 ring-accent/50 ring-2 transition-[border-color,box-shadow] outline-none;
+	}
+
+	kbd {
+		@apply rounded-full border px-1.5 text-xs shadow;
+	}
+
+	a,
+	button {
+		@apply cursor-pointer;
+	}
+
+	mark {
+		@apply text-accent bg-transparent underline;
+	}
+
+	input[type='search']::-webkit-search-cancel-button {
+		@apply cursor-pointer;
+	}
+
+	.scrollbar-thin {
+		scrollbar-width: thin;
+	}
+}

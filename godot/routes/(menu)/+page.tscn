@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://bvkf6gtbqmm6s"]
+
+[ext_resource type="Script" uid="uid://dmjxfyrgc3grw" path="res://routes/(menu)/+page.gd" id="1_bypie"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rhyp7"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.15294118, 0.15294118, 0.16470589, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.24705882, 0.24705882, 0.27450982, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 20
+
+[node name="PanelContainer" type="PanelContainer" unique_id=701693634]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -177.5
+offset_top = -50.5
+offset_right = 177.5
+offset_bottom = 50.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_rhyp7")
+script = ExtResource("1_bypie")
+
+[node name="VBoxCotnainer" type="VBoxContainer" parent="." unique_id=397150595]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Button" type="Button" parent="VBoxCotnainer" unique_id=1881752189]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Play"
+
+[node name="Button2" type="Button" parent="VBoxCotnainer" unique_id=1818860537]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Settings"
+
+[node name="Button3" type="Button" parent="VBoxCotnainer" unique_id=1421509579]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Quit"

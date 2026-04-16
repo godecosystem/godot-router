@@ -1,0 +1,24 @@
+@import '$css';
+
+@layer utilities {
+	@supports (anchor-name: --active-tab) {
+		[data-slot='tabs-trigger'][data-state='active'] {
+			anchor-name: --active-tab;
+			background: transparent !important;
+		}
+	}
+
+	@supports (anchor-name: --active-tab) and (position-anchor: --active-tab) {
+		[data-slot='tabs-list'] [data-slot='tabs-list-indicator'] {
+			position-anchor: --active-tab;
+			top: anchor(top);
+			left: anchor(left);
+			width: anchor-size(width);
+			height: anchor-size(height);
+			display: block;
+			transition: top, left, width, height;
+			transition-duration: 150ms;
+			transition-timing-function: ease-out;
+		}
+	}
+}

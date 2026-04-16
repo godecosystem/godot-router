@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://cqlvneuquo7bd"]
+
+[ext_resource type="Script" uid="uid://y0fpty4q2s6a" path="res://routes/+layout.gd" id="1_ncnyb"]
+[ext_resource type="Script" uid="uid://c28yn1cv7jfri" path="res://addons/godot-router/scripts/slot.gd" id="2_ipk14"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ncnyb"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.09411765, 0.09411765, 0.105882354, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.24705882, 0.24705882, 0.27450982, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 20
+
+[node name="Main" type="Node" unique_id=170585604]
+script = ExtResource("1_ncnyb")
+
+[node name="RouterSlot" type="Node" parent="." unique_id=2087570948]
+script = ExtResource("2_ipk14")
+metadata/_custom_type_script = "uid://c28yn1cv7jfri"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1473006752]
+
+[node name="CurrentPageLabel" type="Label" parent="CanvasLayer" unique_id=165350946]
+unique_name_in_owner = true
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -134.0
+offset_top = -47.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_ncnyb")
+text = "/"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Transition" type="ColorRect" parent="CanvasLayer" unique_id=1006393496]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

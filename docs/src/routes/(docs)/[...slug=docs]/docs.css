@@ -1,0 +1,40 @@
+@import '$css';
+
+@theme {
+	--spacing-docs-header-main: 3rem;
+	--spacing-docs-header-tabs: 2rem;
+	--spacing-docs-header-main-border: 1px;
+	--spacing-docs-header: calc(
+		var(--spacing-docs-header-main) + var(--spacing-docs-header-main-border)
+	);
+
+	--spacing-docs-content-header-toc: 2.25rem;
+	--spacing-docs-content-header-toc-border: 1px;
+	--spacing-docs-content-header: calc(
+		var(--spacing-docs-content-header-toc) + var(--spacing-docs-content-header-toc-border)
+	);
+}
+
+@layer utilities {
+	[data-docs-tabs='true'] {
+		@apply sm:[--spacing-docs-header:calc(var(--spacing-docs-header-main)+var(--spacing-docs-header-tabs)+var(--spacing-docs-header-main-border))];
+	}
+
+	[data-docs-toc='true'] {
+		@apply xl:[--spacing-docs-content-header:0px];
+	}
+
+	[data-docs-toc='false'] {
+		@apply lg:[--spacing-docs-content-header:0px];
+	}
+}
+
+@layer base {
+	section.footnotes {
+		@apply mt-8! border-t border-dashed pt-2;
+
+		#footnote-label {
+			@apply hidden;
+		}
+	}
+}

@@ -1,0 +1,24 @@
+@import '$css';
+
+@layer utilities {
+	@supports (anchor-name: --active-code-group) {
+		[data-slot='code-group-trigger'][data-state='active'] {
+			anchor-name: --active-code-group;
+			background: transparent !important;
+		}
+	}
+
+	@supports (anchor-name: --active-code-group) and (position-anchor: --active-code-group) {
+		[data-slot='code-group-list'] [data-slot='code-group-list-indicator'] {
+			position-anchor: --active-code-group;
+			top: anchor(top);
+			left: anchor(left);
+			width: anchor-size(width);
+			height: anchor-size(height);
+			display: block;
+			transition: top, left, width, height;
+			transition-duration: 150ms;
+			transition-timing-function: ease-out;
+		}
+	}
+}
