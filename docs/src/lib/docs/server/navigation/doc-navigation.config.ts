@@ -14,14 +14,28 @@ const docNavigationConfig = defineDocNavigation({
 			combineHref: false,
 			pages: [
 				{ title: 'Introduction', icon: 'book-open-check', slug: 'docs' },
-				{ title: 'Quick Start', icon: 'rocket' },
-				'loadRest'
+				{ title: 'Quick Start', icon: 'rocket' }
 			]
 		},
 		{
-			title: 'Configuration',
-			icon: 'cog',
+			title: 'Routing',
+			icon: 'route',
 			pages: 'auto'
+		},
+		{
+			title: 'Advanced Routing',
+			icon: 'waypoints',
+			pages: 'auto'
+		},
+		{
+			title: 'Miscellaneous',
+			icon: 'dices',
+			pages: 'auto'
+		},
+		{
+			title: 'API Reference',
+			icon: 'book',
+			pages: [{ title: 'Router (autoload)', fileName: 'api-reference/router.md' }, 'loadRest']
 		}
 	]
 });

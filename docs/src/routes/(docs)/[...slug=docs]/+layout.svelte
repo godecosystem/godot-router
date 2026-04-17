@@ -11,13 +11,6 @@
 
 	let { data, children } = $props();
 
-	// Create shared context for tabs and code groups
-	createSharedValueContext({
-		id: 'js-pkg-managers',
-		initialValue: 'bun',
-		useLocalStorage: true
-	});
-
 	setDocNavigationContext(() => data.navigation ?? { tabs: [], groups: [], pages: [] });
 
 	const docLayoutContext = setDocLayoutContext();

@@ -5,15 +5,16 @@ description: Godot-Router is a free addon for Godot that helps organize files an
 
 import { Tree, TreeFolder, TreeFile } from '$ui/tree';
 
-## Overview
 
-Godot-Router is the Godot version of web development file based routing systems, drawing heavy inspiration from [SvelteKit](https://svelte.dev/docs/kit/routing). This allows for an organized file system and simple navigation between scenes or _routes_. 
+## What is Godot-Router?
 
-Below is an example folder structure of a godot project tailored to Godot-Router. You can expand the `(menu)` and `(game)` group folders to see the _routes_.
+Godot-Router brings file-based routing to Godot, inspired by [SvelteKit](https://svelte.dev/docs/kit/routing). It lets you organize your project by folder and file names, making navigation between scenes simple and your project structure easy to follow.
+
+Below is an example folder structure for a Godot project using Godot-Router. You can expand the `(menu)` and `(game)` group folders to see the routes:
 
 <Tree>
     <TreeFolder name="addons" noInteraction />
-    <TreeFolder name="routes" open>
+    <TreeFolder name="routes" open noInteraction>
         <TreeFolder name="(menu)">
             <TreeFolder name="(settings)">
                 <TreeFolder name="audio">
@@ -48,14 +49,15 @@ You will notice two consistent file names in the above example: `+page.tscn` and
 
 ## Why Is This Useful?
 
-Lets say I wanted to have multiple different setting pages: _audio_, _gameplay_, _controls_. It would be typical to create scenes for each, and then have one _settings_ scene that includes the three scenes. Then, I would have to create a script that toggles the visibility of each setting scene.
+Without Godot-Router, managing multiple related scenes (like audio, gameplay, and controls settings) often means creating one big scene and writing scripts to show or hide each part. This can get complicated and tightly coupled.
 
-This isn't entirely difficult to do... but it can be time consuming and results in coupling.
+With Godot-Router, you simply create a folder and a `+page.tscn` for each setting. Each page is independent. A `+layout.tscn` in the folder can add shared UI, like a tab bar, and use `Router.goto()` to switch between pages. This keeps your project organized and your code simple.
 
----
+## Ready to Dive In?
 
-With Godot-Router, you can define a folder and a `+page.tscn` for each scene like in the file example above. These pages would be completely independent, just define what nodes go on that page. 
+Head over to the [Quick Start](/docs/quick-start) section to start using Godot-Router quickly.
 
-Then, the `(settings)` folder can have a `+layout.tscn` that wraps all those setting pages, like with a tab bar. This tab bar would simply contain buttons that call a `Router.goto()` function, like `Router.goto("/gameplay")` to go to the _gameplay_ settings.
+OR
 
-Continue reading the documentation to gain a better understand of how pages, layouts, and routing works more in depth.
+Explore the rest of the documentation to see Godot-Router's options and capabilities.
+

@@ -1,1 +1,0 @@
-<FileReader file="../godot/addons/godot-router/scripts/router.gd" title="router.gd" />

@@ -26,6 +26,7 @@ func goto(raw_url: String, instance_override: Node = null) -> void:
 	var params: Dictionary[String, String] = parsed["params"]
 
 	if url_path == page.url:
+		page.params = params
 		return
 
 	assert(_url_to_fs.has(url_path), 'Router: route not found for URL: "%s"')
