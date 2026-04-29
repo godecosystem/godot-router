@@ -193,7 +193,7 @@ func _do_replace_slot(parent: Node, old_slot: Node, new_node: Node, old_index: i
 	parent.move_child(new_node, mini(old_index, parent.get_child_count() - 1))
 
 func _rebuild_current_page(url: String, params: Dictionary[String, String]) -> void:
-	var p_path: String = BASE_PATH + _url_to_fs[url] + "/" + PAGE_NAME + ".tscn"
+	var p_path: String = BASE_PATH + _url_to_fs[url] + "/" + PAGE_SCENE
 	var p_route: Route = _active_routes[p_path]
 
 	var data: Dictionary[String, Variant] = {}
@@ -246,9 +246,9 @@ func _apply_debug_route_name(node: Node) -> void:
 
 	var scene_path: String = node.scene_file_path
 	var debug_prefix: String = ""
-	if scene_path.ends_with("/" + PAGE_NAME + ".tscn"):
+	if scene_path.ends_with("/" + PAGE_SCENE):
 		debug_prefix = PAGE_NAME
-	elif scene_path.ends_with("/" + LAYOUT_NAME + ".tscn"):
+	elif scene_path.ends_with("/" + LAYOUT_SCENE):
 		debug_prefix = LAYOUT_NAME
 
 	if debug_prefix == "" or node.name.begins_with(debug_prefix):
