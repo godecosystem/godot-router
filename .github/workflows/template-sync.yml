@@ -39,7 +39,7 @@ jobs:
           source_path="$(mktemp -d)"
           git clone --depth 1 "$SOURCE_REPOSITORY" "$source_path"
 
-          branch='chore/template-sync'
+          branch='chore/template-sync-v2'
           git checkout -B "$branch"
 
           ignore_file="$target_path/.templatesyncignore"
