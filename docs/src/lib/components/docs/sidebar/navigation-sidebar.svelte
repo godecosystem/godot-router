@@ -27,7 +27,7 @@
 		<Sidebar.Content>
 			{#if docNavigation.getMode() === 'group'}
 				{@const data = docNavigation.getData() as GroupedPages[]}
-				{#each data as navGroup, index (index)}
+				{#each data as navGroup (`${docNavigation.currentTab?.id}-${navGroup.id}`)}
 					{#if navGroup.showTitle}
 						<Sidebar.Group collapsible={navGroup.collapsible}>
 							<Sidebar.GroupLabel hasActive={navGroup.id === docNavigation.currentGroup?.id}>
