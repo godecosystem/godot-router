@@ -15,7 +15,7 @@
 
 <div class="grid grow content-center justify-items-center gap-8 p-8">
 	<h1 class="flex items-center gap-3 text-center text-3xl font-bold">
-		<Logo class="h-8" />
+		<Logo class="size-12" />
 		<span>{siteConfig.name}</span>
 	</h1>
 	<div class="text-muted-foreground max-w-lg space-y-4 text-center text-lg">
