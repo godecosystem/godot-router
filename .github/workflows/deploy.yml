@@ -20,6 +20,10 @@ jobs:
         run: bun install
         working-directory: docs
 
+      - name: Validate
+        run: bun test && bun run check && bun run lint
+        working-directory: docs
+
       - name: build
         env:
           BASE_PATH: "/${{ github.event.repository.name }}"
