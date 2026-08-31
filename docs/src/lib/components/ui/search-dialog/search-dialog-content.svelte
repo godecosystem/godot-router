@@ -116,7 +116,7 @@
 			ESC
 		</Dialog.Close>
 	</div>
-	<div {@attach setResultsContainer} class="scrollbar-thin relative overflow-y-auto">
+	<div {@attach setResultsContainer} class="relative scrollbar-thin overflow-y-auto">
 		{#if !searchContext.query}
 			{#each searchContext.getDefaultResults().entries() as [group, data] (group)}
 				<SearchDialog.Section title={group} icon={data.icon}>

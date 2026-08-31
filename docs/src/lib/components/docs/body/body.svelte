@@ -53,7 +53,7 @@
 						/>
 					</Collapsible.Trigger>
 					<Collapsible.Content
-						class="scrollbar-thin bg-background isolate max-h-[min(16rem,calc(100dvh-var(--spacing-docs-header)-var(--spacing-docs-content-header-toc)))] overflow-y-auto border-t border-b"
+						class="bg-background isolate max-h-[min(16rem,calc(100dvh-var(--spacing-docs-header)-var(--spacing-docs-content-header-toc)))] scrollbar-thin overflow-y-auto border-t border-b shadow-lg"
 					>
 						<div class="from-background sticky top-0 h-4 shrink-0 bg-linear-to-b"></div>
 						<TOC.Nav class="px-4">

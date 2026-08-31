@@ -1,4 +1,4 @@
-import config from '../../src/lib/docs/server/navigation/doc-navigation.config';
+import config from '../../src/lib/docs/server/navigation/doc-navigation.config.ts';
 import path from 'node:path';
 import type {
 	DocPrivateAccess,
@@ -6,13 +6,13 @@ import type {
 	DocPage,
 	DocTab,
 	PageItems
-} from '../../src/lib/docs/server/navigation/define-doc-navigation';
+} from '../../src/lib/docs/server/navigation/define-doc-navigation.ts';
 import type {
 	NavigationGroup,
 	NavigationTab
-} from '../../src/lib/docs/client/doc-navigation-context.svelte';
-import type { ManifestNavigationPage } from '../../src/lib/docs/server/types';
-import { toPosixPath } from './utils';
+} from '../../src/lib/docs/client/doc-navigation-context.svelte.ts';
+import type { ManifestNavigationPage } from '../../src/lib/docs/server/types/index.ts';
+import { toPosixPath } from './utils.ts';
 
 type NavigationTabMapItem = Omit<NavigationTab, 'id'>;
 type NavigationGroupMapItem = Omit<NavigationGroup, 'id'>;

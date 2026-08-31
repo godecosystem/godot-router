@@ -31,7 +31,7 @@
 
 <div class="overflow-hidden rounded-md border">
 	{#if toolbar}
-		<div class="scrollbar-thin max-h-96 overflow-auto">
+		<div class="max-h-96 scrollbar-thin overflow-auto">
 			<div
 				class="bg-secondary sticky top-0 z-1 flex items-center gap-2 px-2 pt-2 text-sm font-medium"
 			>

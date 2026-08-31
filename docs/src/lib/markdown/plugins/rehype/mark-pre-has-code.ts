@@ -18,8 +18,10 @@ export default function rehypeMarkPreHasCode() {
 			// Promote data-language → plain language prop and remove the original
 			// so it doesn't leak into ...restProps. The template re-adds it explicitly.
 			const lang = node.properties['data-language'];
+			if (typeof lang === 'string' || typeof lang === 'number') {
+				node.properties['language'] = String(lang);
+			}
 			if (lang !== undefined) {
-				node.properties['language'] = lang;
 				delete node.properties['data-language'];
 			}
 

@@ -16,7 +16,7 @@
 		try {
 			const regex = new RegExp(`(${escapeRegex(lowerQuery)})`, 'gi');
 			return text.split(regex);
-		} catch (e) {
+		} catch {
 			return [text];
 		}
 	});

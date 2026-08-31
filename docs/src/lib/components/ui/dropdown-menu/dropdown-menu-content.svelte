@@ -20,7 +20,7 @@
 		{sideOffset}
 		collisionPadding={8}
 		class={cn(
-			'scrollbar-thin bg-background z-50 min-w-8 overflow-x-hidden overflow-y-auto rounded-sm border p-1 shadow-md outline-none',
+			'bg-background z-50 min-w-8 scrollbar-thin overflow-x-hidden overflow-y-auto rounded-sm border p-1 shadow-md outline-none',
 			'max-h-(--bits-dropdown-menu-content-available-height) origin-(--bits-dropdown-menu-content-transform-origin)',
 			'data-[side=bottom]:slide-in-from-top-2',
 			'data-[side=left]:slide-in-from-right-2',
