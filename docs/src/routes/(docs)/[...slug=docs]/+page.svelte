@@ -18,13 +18,17 @@
 	import { getTOCContext } from '$ui/table-of-contents';
 	import type { Root as HastRoot } from 'hast';
 	import type { Snippet } from 'svelte';
+	import {
+		aiProviderLinks,
+		getAiProviderUrl,
+		type AiProviderLink
+	} from '$lib/docs/client/ai-provider-links';
 
 	type PageData = {
 		ast: HastRoot;
 		imports?: Record<string, string>;
 		title: string;
 		description?: string;
-		tocEntries?: Array<{ id: string; text: string; level: number }>;
 	};
 
 	let { data }: { data: PageData } = $props();
@@ -44,11 +48,11 @@
 
 			const componentExport = module[name];
 			if (typeof componentExport === 'function') {
-				resolved[name] = componentExport as Component<any>;
+				resolved[name] = componentExport as Component<Record<string, unknown>>;
 			}
 
 			if (!resolved[name] && typeof module.default === 'function') {
-				resolved[name] = module.default as Component<any>;
+				resolved[name] = module.default as Component<Record<string, unknown>>;
 			}
 
 			// Keep the full module for namespace lookups like Steps.Root.
@@ -63,22 +67,24 @@
 
 	let mdCopied = $state(false);
 
-	type AiProvider = {
-		name: string;
-		urlPrefix: string;
+	function omitOnclick<T extends { onclick?: unknown }>({ onclick, ...props }: T) {
+		void onclick;
+		return props;
+	}
+
+	type AiProvider = AiProviderLink & {
 		icon: Snippet;
 	};
 
-	const aiProviders: AiProvider[] = [
-		{ name: 'ChatGPT', urlPrefix: 'https://chatgpt.com/?q=', icon: ChatGptIcon },
-		{ name: 'Claude', urlPrefix: 'https://claude.ai/new?q=', icon: ClaudeIcon },
-		{ name: 'Gemini', urlPrefix: 'https://gemini.google.com/app?prompt=', icon: GeminiIcon }
-	];
+	const providerIcons: Record<AiProviderLink['id'], Snippet> = {
+		chatgpt: ChatGptIcon,
+		claude: ClaudeIcon
+	};
 
-	function getAiProviderHref(urlPrefix: string) {
-		const prompt = `Read and explain this docs page: ${page.url.href}.md`;
-		return `${urlPrefix}${encodeURIComponent(prompt)}`;
-	}
+	const aiProviders: AiProvider[] = aiProviderLinks.map((provider) => ({
+		...provider,
+		icon: providerIcons[provider.id]
+	}));
 
 	async function getPageMarkdown() {
 		const response = await fetch(`${page.url.pathname}.md`);
@@ -123,20 +129,6 @@
 	</svg>
 {/snippet}
 
-{#snippet GeminiIcon()}
-	<svg
-		viewBox="0 0 24 24"
-		fill="currentColor"
-		xmlns="http://www.w3.org/2000/svg"
-		class="size-4.5"
-		aria-hidden="true"
-	>
-		<path
-			d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"
-		/>
-	</svg>
-{/snippet}
-
 <article class="grow">
 	<header class="flex flex-col items-start gap-2">
 		{#if docNavigation.currentGroup}
@@ -175,7 +167,7 @@
 				>
 					<DropdownMenu.Item>
 						{#snippet child({ props })}
-							{@const { onclick, ...restProps } = props}
+							{@const restProps = omitOnclick(props)}
 							<CopyButton bind:copied={mdCopied} content={getPageMarkdown} unstyled {...restProps}>
 								{#snippet children({ copied })}
 									{#if copied}
@@ -230,7 +222,7 @@
 						<DropdownMenu.Item>
 							{#snippet child({ props })}
 								<Link
-									href={getAiProviderHref(provider.urlPrefix)}
+									href={getAiProviderUrl(provider, page.url).href}
 									target="_blank"
 									rel="noreferrer"
 									{...props}

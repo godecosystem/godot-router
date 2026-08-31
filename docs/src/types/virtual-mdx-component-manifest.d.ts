@@ -2,7 +2,7 @@ declare module 'virtual:mdx-component-manifest' {
 	import type { Component } from 'svelte';
 
 	type ModuleExport = {
-		default?: Component<any>;
+		default?: Component<Record<string, unknown>>;
 	};
 
 	const manifest: Record<string, ModuleExport | undefined>;

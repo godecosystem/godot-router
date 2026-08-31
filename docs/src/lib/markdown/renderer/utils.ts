@@ -26,7 +26,7 @@ export const VOID_ELEMENTS = new Set([
 ]);
 
 export type ResolvedRenderer = {
-	component: Component<any>;
+	component: Component;
 	props: Record<string, unknown>;
 	inheritNodeProps: boolean;
 };
@@ -71,7 +71,7 @@ type RendererOptions = {
 	resolvedComponents?: Record<string, unknown>;
 };
 
-function isRenderableComponent(value: unknown): value is Component<any> {
+function isRenderableComponent(value: unknown): value is Component {
 	return typeof value === 'function';
 }
 

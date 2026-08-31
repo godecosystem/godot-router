@@ -19,12 +19,17 @@
 	}: Props = $props();
 
 	let copied = $state(false);
+
+	function omitOnclick<T extends { onclick?: unknown }>({ onclick, ...props }: T) {
+		void onclick;
+		return props;
+	}
 </script>
 
 <Tooltip.Root>
 	<Tooltip.Trigger class={className}>
 		{#snippet child({ props })}
-			{@const { onclick, ...mergedProps } = mergeProps(props, restProps)}
+			{@const mergedProps = omitOnclick(mergeProps(props, restProps))}
 			<CopyButton {content} {timeout} {variant} {size} {...mergedProps} bind:copied>
 				{#if children}
 					{@render children({ copied })}
