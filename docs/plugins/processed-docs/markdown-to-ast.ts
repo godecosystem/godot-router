@@ -6,12 +6,12 @@ import remarkParse from 'remark-parse';
 import remarkMdx from 'remark-mdx';
 import remarkStringify from 'remark-stringify';
 import remarkRehype, { type Options as RemarkRehypeOptions } from 'remark-rehype';
-import markdownConfig from '../../src/lib/markdown/configuration/markdown.config';
+import markdownConfig from '../../src/lib/markdown/configuration/markdown.config.ts';
 import type {
 	MarkdownAstResult,
 	MarkdownMetadata,
 	TableOfContentsHeading
-} from '../../src/lib/docs/server/types';
+} from '../../src/lib/docs/server/types/index.ts';
 import { extractImportDataFromRaw, stripImportLines } from './mdx-import-utils.js';
 import { visit } from 'unist-util-visit';
 

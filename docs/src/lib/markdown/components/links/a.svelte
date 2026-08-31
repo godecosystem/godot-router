@@ -2,14 +2,18 @@
 	import Link from '$ui/link';
 	import ExternalLink from '@lucide/svelte/icons/external-link';
 	import type { HTMLAnchorAttributes } from 'svelte/elements';
+	import { getSafeMarkdownHref } from './safe-href';
 
 	let { href, children, ...restProps }: HTMLAnchorAttributes = $props();
 
-	const isExternal = $derived(!href?.startsWith('/') && !href?.startsWith('#'));
+	const safeHref = $derived(getSafeMarkdownHref(href));
+	const isExternal = $derived(
+		Boolean(safeHref && !safeHref.startsWith('/') && !safeHref.startsWith('#'))
+	);
 </script>
 
 <Link
-	{href}
+	href={safeHref}
 	{...restProps}
 	class={[
 		isExternal && 'inline-flex items-center gap-1',

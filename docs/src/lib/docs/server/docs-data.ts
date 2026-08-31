@@ -224,14 +224,17 @@ export function getDocLayoutData(filter: (doc: BuiltDocRecord) => boolean = () =
 		slug
 	}));
 	const visibleManifestPages = allManifestPages.filter((page) => filter(page));
-	const visiblePages: NavigationDocPage[] = visibleManifestPages.map(
-		({ markdown, filepath: _filepath, private: _private, ...page }) => ({
-			...page,
-			description: markdown.metadata.description,
-			prev: undefined,
-			next: undefined
-		})
-	);
+	const visiblePages: NavigationDocPage[] = visibleManifestPages.map((page) => ({
+		slug: page.slug,
+		href: page.href,
+		title: page.title,
+		description: page.markdown.metadata.description,
+		groupId: page.groupId,
+		tabId: page.tabId,
+		icon: page.icon,
+		prev: undefined,
+		next: undefined
+	}));
 	const config = docNavigationConfig as DocNavigationConfig;
 	const tabNextPrevEnabled = 'tabs' in config && config.tabNextPrev === true;
 

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import BlueprintRenderer from './blueprint-renderer.svelte';
 	import type { RootContent } from 'hast';
+	import type { HTMLAttributes } from 'svelte/elements';
 	import { VOID_ELEMENTS, getMappedRenderer, getMdxProps } from './utils';
 
 	let {
@@ -60,6 +61,7 @@
 		resolvedComponents
 	})}
 	{@const isVoidElement = VOID_ELEMENTS.has(elementName)}
+	{@const nativeElementProps = (node.properties ?? {}) as unknown as HTMLAttributes<HTMLElement>}
 	{#if mappedElementRenderer}
 		{@const ElementComponent = mappedElementRenderer.component}
 		{@const elementProps = mappedElementRenderer.inheritNodeProps ? (node.properties ?? {}) : {}}
@@ -74,9 +76,9 @@
 			{/each}
 		</ElementComponent>
 	{:else if isVoidElement}
-		<svelte:element this={elementName} {...node.properties ?? {}} />
+		<svelte:element this={elementName} {...nativeElementProps} />
 	{:else}
-		<svelte:element this={elementName} {...node.properties ?? {}}>
+		<svelte:element this={elementName} {...nativeElementProps}>
 			{#each node.children ?? [] as child, i (`${elementName}-${i}`)}
 				<BlueprintRenderer
 					node={child}

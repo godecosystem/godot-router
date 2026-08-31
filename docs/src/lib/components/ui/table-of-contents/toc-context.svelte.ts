@@ -1,6 +1,7 @@
 import { createContext } from 'svelte';
 import { page } from '$app/state';
-import { goto, afterNavigate } from '$app/navigation';
+import { afterNavigate, replaceState } from '$app/navigation';
+import { resolve } from '$app/paths';
 import { SvelteMap, SvelteSet } from 'svelte/reactivity';
 import type { Attachment } from 'svelte/attachments';
 
@@ -123,6 +124,11 @@ export class TOCContext {
 		return headingTop - containerTop - window.pageYOffset;
 	}
 
+	private clearRouteHash() {
+		const currentPath = `${page.url.pathname}${page.url.search}` as `/${string}`;
+		replaceState(resolve(currentPath), page.state);
+	}
+
 	private buildParentSet(stack: Array<{ id: string; level: number }>) {
 		const parentIds = new SvelteSet<string>();
 		const highlightLevels = this.#getHighlightParentLevels();
@@ -161,7 +167,7 @@ export class TOCContext {
 			}
 
 			if (id === this.routeHashKey && !entry.isIntersecting) {
-				goto('', { noScroll: true, replaceState: true });
+				this.clearRouteHash();
 				return;
 			}
 
@@ -191,7 +197,7 @@ export class TOCContext {
 			}
 
 			if (this.#lastKey === this.routeHashKey && !entry.isIntersecting) {
-				goto('', { noScroll: true, replaceState: true });
+				this.clearRouteHash();
 				return;
 			}
 

@@ -16,7 +16,7 @@
 <aside
 	bind:this={ref}
 	data-slot="sidebar"
-	class={cn('scrollbar-thin sticky h-dvh shrink-0 overflow-x-hidden', className)}
+	class={cn('sticky h-dvh shrink-0 scrollbar-thin overflow-x-hidden', className)}
 	{...restProps}
 >
 	{@render children?.()}

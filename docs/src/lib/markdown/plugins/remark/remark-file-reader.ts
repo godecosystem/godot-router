@@ -10,6 +10,15 @@ type AttrValue = string | boolean;
 type AttrMap = Record<string, AttrValue>;
 const REGEX_LITERAL_REGEX = /^\/(.*)\/([a-z]*)$/i;
 
+export type RemarkFileReaderOptions = {
+	allowedRoots?: string[];
+};
+
+type FileResolution =
+	| { status: 'resolved'; path: string }
+	| { status: 'missing' }
+	| { status: 'denied' };
+
 function toPosixPath(filePath: string): string {
 	return filePath.replaceAll('\\', '/');
 }
@@ -50,94 +59,131 @@ interface MdxJsxElementNode extends Node {
 	// mdx AST may set `name` to `string` or `null` depending on parser,
 	// accept both to remain compatible with library types.
 	name: string | null;
-	attributes?: MdxAttribute[] | undefined | null;
-	children?: unknown[] | undefined | null;
+	attributes?: MdxAttribute[] | null;
+	children?: unknown[] | null;
+}
+
+function parseBoolean(value: string): AttrValue {
+	if (value === 'true') return true;
+	if (value === 'false') return false;
+	return value;
+}
+
+function getMdxAttributeValue(attribute: MdxAttribute): AttrValue {
+	const value = attribute.value;
+	if (value === undefined || value === null) return true;
+	if (typeof value === 'string') return parseBoolean(value);
+	if (Array.isArray(value)) return value.map((child) => child.value ?? '').join('');
+	return parseBoolean(value.value ?? '');
 }
 
 function parseMdxAttributes(attributes?: MdxAttribute[]): AttrMap {
-	const out: AttrMap = {};
-	if (!Array.isArray(attributes)) return out;
+	const result: AttrMap = {};
+	for (const attribute of attributes ?? []) {
+		if (!attribute.name) continue;
+		result[attribute.name] = getMdxAttributeValue(attribute);
+	}
+	return result;
+}
 
-	for (const raw of attributes) {
-		if (raw.type === 'mdxJsxAttribute') {
-			const name = String(raw.name ?? '');
-			const val = raw.value;
+function getOpeningTag(value: string): string | null {
+	const start = value.toLowerCase().indexOf('<filereader');
+	if (start === -1) return null;
 
-			if (val === undefined || val === null) {
-				out[name] = true;
-				continue;
-			}
-
-			if (typeof val === 'string') {
-				out[name] = val;
-				continue;
-			}
-
-			if (Array.isArray(val)) {
-				out[name] = val.map((c) => (typeof c.value === 'string' ? c.value : '')).join('');
-				continue;
-			}
-
-			// object with a `value` property
-			const inner = (val as { value?: string }).value ?? String(val);
-			if (inner === 'true') out[name] = true;
-			else if (inner === 'false') out[name] = false;
-			else out[name] = inner;
-			continue;
-		}
-
-		if (raw.type === 'mdxJsxExpressionAttribute') {
-			const name = String(raw.name ?? '');
-			const inner = raw.value;
-			const val =
-				typeof inner === 'object' && inner !== null
-					? ((inner as { value?: string }).value ?? inner)
-					: inner;
-			if (val === 'true') out[name] = true;
-			else if (val === 'false') out[name] = false;
-			else out[name] = (val ?? '') as string;
+	let quote = '';
+	for (let index = start; index < value.length; index++) {
+		const character = value[index];
+		if ((character === '"' || character === "'") && (!quote || quote === character)) {
+			quote = quote ? '' : character;
+		} else if (character === '>' && !quote) {
+			return value.slice(start + '<FileReader'.length, index);
 		}
 	}
+	return null;
+}
 
-	return out;
+function isAttributeNameCharacter(character: string): boolean {
+	return /[A-Za-z0-9_:-]/.test(character);
 }
 
 function parseHtmlAttributes(value: string): AttrMap {
-	const out: AttrMap = {};
-	const m = value.match(/<FileReader\s*([^>]*)\/?>(?:<\/FileReader>)?/i);
-	if (!m) return out;
-	const attrs = m[1] ?? '';
-	const re = /([A-Za-z0-9_:-]+)(?:\s*=\s*(?:"([^\"]*)"|'([^']*)'|([^\s"'>/]+)))?/g;
-	let mm: RegExpExecArray | null;
-	while ((mm = re.exec(attrs))) {
-		const name = mm[1];
-		const val = mm[2] ?? mm[3] ?? mm[4];
-		out[name] = val ?? true;
+	const source = getOpeningTag(value);
+	const result: AttrMap = {};
+	if (source === null) return result;
+
+	let index = 0;
+	while (index < source.length) {
+		while (/\s|\//.test(source[index] ?? '')) index++;
+		const nameStart = index;
+		while (isAttributeNameCharacter(source[index] ?? '')) index++;
+		const name = source.slice(nameStart, index);
+		if (!name) {
+			index++;
+			continue;
+		}
+
+		while (/\s/.test(source[index] ?? '')) index++;
+		if (source[index] !== '=') {
+			result[name] = true;
+			continue;
+		}
+
+		index++;
+		while (/\s/.test(source[index] ?? '')) index++;
+		const quote = source[index] === '"' || source[index] === "'" ? source[index++] : '';
+		const valueStart = index;
+		while (
+			index < source.length &&
+			(quote ? source[index] !== quote : !/\s|\//.test(source[index] ?? ''))
+		) {
+			index++;
+		}
+		result[name] = source.slice(valueStart, index);
+		if (quote) index++;
 	}
 
-	return out;
+	return result;
 }
 
-function resolveFile(fileRef: string): string | null {
-	if (!fileRef) return null;
+function isWithinRoot(filePath: string, rootPath: string): boolean {
+	const relativePath = path.relative(rootPath, filePath);
+	return (
+		relativePath === '' ||
+		(!relativePath.startsWith(`..${path.sep}`) &&
+			relativePath !== '..' &&
+			!path.isAbsolute(relativePath))
+	);
+}
 
-	try {
-		if (path.isAbsolute(fileRef)) {
-			return fs.existsSync(fileRef) ? fileRef : null;
-		}
-		const repoResolved = toPosixPath(path.resolve(process.cwd(), fileRef));
-		return fs.existsSync(repoResolved) ? repoResolved : null;
-	} catch (err) {
-		// avoid throwing in the transformer — report and continue
-		console.error('remark-file-reader.resolveFile error', err);
-		return null;
+export function resolveFileReference(
+	fileRef: string,
+	options: RemarkFileReaderOptions & { cwd?: string } = {}
+): FileResolution {
+	if (!fileRef) return { status: 'missing' };
+
+	const cwd = options.cwd ?? process.cwd();
+	const resolvedPath = path.resolve(cwd, fileRef);
+	if (!fs.existsSync(resolvedPath)) return { status: 'missing' };
+
+	const realFilePath = fs.realpathSync(resolvedPath);
+	if (options.allowedRoots === undefined) {
+		return { status: 'resolved', path: toPosixPath(realFilePath) };
 	}
+
+	const allowed = options.allowedRoots.some((root) => {
+		const resolvedRoot = path.resolve(cwd, root);
+		if (!fs.existsSync(resolvedRoot)) return false;
+
+		return isWithinRoot(realFilePath, fs.realpathSync(resolvedRoot));
+	});
+
+	return allowed ? { status: 'resolved', path: toPosixPath(realFilePath) } : { status: 'denied' };
 }
 
 function trimTrailingBlankLines(content: string): string {
-	let s = content.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
-	s = s.replaceAll(/(\n\s*)+$/g, '');
-	return s;
+	const lines = content.replaceAll('\r\n', '\n').replaceAll('\r', '\n').split('\n');
+	while (lines.at(-1)?.trim() === '') lines.pop();
+	return lines.join('\n');
 }
 
 function parseRegexSourceAndFlags(
@@ -236,7 +282,7 @@ function buildMeta(attrs: AttrMap, fileRef: string): string | undefined {
 	return parts.length ? parts.join(' ') : undefined;
 }
 
-function readAndTrimFile(resolved: string, file?: VFile, fileRef?: string): string | null {
+function readAndTrimFile(resolved: string, file?: VFile): string | null {
 	try {
 		return trimTrailingBlankLines(fs.readFileSync(resolved, 'utf8'));
 	} catch (err) {
@@ -249,8 +295,12 @@ function readAndTrimFile(resolved: string, file?: VFile, fileRef?: string): stri
 	}
 }
 
+export function inferCodeLanguage(fileRef: string): string {
+	return path.extname(fileRef).replace(/^\./, '') || 'txt';
+}
+
 function createCodeNode(fileRef: string, content: string, attrs: AttrMap): Code {
-	const ext = path.extname(fileRef).replace(/^\./, '') || undefined;
+	const ext = inferCodeLanguage(fileRef);
 	const meta = buildMeta(attrs, fileRef);
 	return { type: 'code', lang: ext, meta, value: content } as Code;
 }
@@ -264,6 +314,7 @@ function processAttrsAndReplace(
 	fileRefRaw: string,
 	parent: Parent,
 	index: number,
+	options: RemarkFileReaderOptions,
 	file?: VFile
 ) {
 	const fileRef = String(fileRefRaw ?? '').trim();
@@ -272,14 +323,19 @@ function processAttrsAndReplace(
 		return;
 	}
 
-	const resolved = resolveFile(fileRef);
-	if (!resolved) {
-		if (file) file.message(`FileReader: file not found or not absolute: ${fileRef}`);
+	const resolution = resolveFileReference(fileRef, options);
+	if (resolution.status === 'missing') {
+		if (file) file.message(`FileReader: file not found: ${fileRef}`);
 		else console.error('FileReader: file not found', fileRef);
 		return;
 	}
+	if (resolution.status === 'denied') {
+		if (file) file.message(`FileReader: file is outside the configured allowedRoots: ${fileRef}`);
+		else console.error('FileReader: file is outside the configured allowedRoots', fileRef);
+		return;
+	}
 
-	const content = readAndTrimFile(resolved, file, fileRef);
+	const content = readAndTrimFile(resolution.path, file);
 	if (content === null) return;
 	const extracted = extractContent(content, attrs, file);
 	if (extracted === null) return;
@@ -293,7 +349,7 @@ function isMdxJsxElement(node: Node): node is MdxJsxElementNode {
 	return node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement';
 }
 
-export default function remarkFileReader(): Transformer<Root> {
+export default function remarkFileReader(options: RemarkFileReaderOptions = {}): Transformer<Root> {
 	return (tree: Root, file?: VFile) => {
 		visit(tree, (node: Node, index?: number | null, parent?: Parent | null) => {
 			if (!parent || typeof index !== 'number' || !Array.isArray(parent.children)) return;
@@ -303,7 +359,7 @@ export default function remarkFileReader(): Transformer<Root> {
 
 				const attrs = parseMdxAttributes(node.attributes ?? undefined);
 				const fileRef = String(attrs.file ?? '').trim();
-				return processAttrsAndReplace(attrs, fileRef, parent, index, file);
+				return processAttrsAndReplace(attrs, fileRef, parent, index, options, file);
 			}
 
 			if (node.type === 'html') {
@@ -312,7 +368,7 @@ export default function remarkFileReader(): Transformer<Root> {
 
 				const attrs = parseHtmlAttributes(html);
 				const fileRef = String(attrs.file ?? '').trim();
-				return processAttrsAndReplace(attrs, fileRef, parent, index, file);
+				return processAttrsAndReplace(attrs, fileRef, parent, index, options, file);
 			}
 		});
 	};

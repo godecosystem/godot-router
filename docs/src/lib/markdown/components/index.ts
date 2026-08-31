@@ -23,7 +23,7 @@ import Ul from './lists/ul.svelte';
 import Li from './lists/li.svelte';
 import { CodeGroup, CodeGroupContent, CodeGroupList, CodeGroupTrigger } from '$ui/code-group';
 
-export type MarkdownNodeComponent = Component<any>;
+export type MarkdownNodeComponent = Component<never>;
 
 export type AstNodeContext = {
 	node: RootContent;
