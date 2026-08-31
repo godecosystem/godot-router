@@ -1,4 +1,4 @@
-import { defineDocNavigation } from './define-doc-navigation';
+import { defineDocNavigation } from './define-doc-navigation.ts';
 
 // The Navigation Config defines how the documentation is loaded and presented.
 // The 'auto' option allows for automatic generation based on the file structure, while 'loadRest' can be used to load remaining items after explicitly defined ones.
