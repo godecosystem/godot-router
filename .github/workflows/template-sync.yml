@@ -1,8 +1,9 @@
 name: Sync Template Updates
 
 on:
-  schedule:
-    - cron: '0 9 * * 1'
+  push:
+    branches:
+      - template-sync
   workflow_dispatch:
 
 env:
