@@ -250,7 +250,7 @@
 		{@attach toc.attachContainerElement}
 		class="**:[[id]]:scroll-mt-[max(calc(var(--spacing-docs-header)+var(--spacing-docs-content-header)+1.5rem),25dvh)] [&>*:not([class*='mt-']):not([class*='my-']):not([class*='m-'])]:mt-4"
 	>
-		{#each data.ast.children ?? [] as node, i (`node-${i}`)}
+		{#each data.ast.children ?? [] as node, i (`${page.url.pathname}-node-${i}`)}
 			<BlueprintRenderer {node} resolvedComponents={resolvedMdxComponents} />
 		{/each}
 	</div>

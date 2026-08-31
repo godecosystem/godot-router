@@ -26,7 +26,8 @@ const markdownConfig = defineConfig({
 		[
 			remarkRehype,
 			{
-				footnoteBackContent: '↩\uFE0E'
+				footnoteBackContent: '↩\uFE0E',
+				footnoteLabelProperties: {}
 			}
 		]
 	],

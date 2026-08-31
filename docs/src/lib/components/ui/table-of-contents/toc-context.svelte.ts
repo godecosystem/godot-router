@@ -1,7 +1,6 @@
 import { createContext } from 'svelte';
 import { page } from '$app/state';
-import { afterNavigate, replaceState } from '$app/navigation';
-import { resolve } from '$app/paths';
+import { afterNavigate, goto } from '$app/navigation';
 import { SvelteMap, SvelteSet } from 'svelte/reactivity';
 import type { Attachment } from 'svelte/attachments';
 
@@ -125,8 +124,12 @@ export class TOCContext {
 	}
 
 	private clearRouteHash() {
-		const currentPath = `${page.url.pathname}${page.url.search}` as `/${string}`;
-		replaceState(resolve(currentPath), page.state);
+		// eslint-disable-next-line svelte/no-navigation-without-resolve -- empty target preserves the current GitHub Pages path
+		goto('', {
+			replaceState: true,
+			noScroll: true,
+			keepFocus: true
+		});
 	}
 
 	private buildParentSet(stack: Array<{ id: string; level: number }>) {

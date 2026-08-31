@@ -58,7 +58,7 @@
 		{#if isActive}
 			<div
 				class="bg-accent/25 absolute -inset-1 -z-1"
-				in:slide={{ duration: 500, axis: 'x', easing: cubicOut }}
+				transition:slide={{ duration: 500, axis: 'x', easing: cubicOut }}
 			></div>
 		{/if}
 	</svelte:element>

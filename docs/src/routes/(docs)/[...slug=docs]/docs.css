@@ -31,10 +31,10 @@
 
 @layer base {
 	section.footnotes {
-		@apply mt-8! border-t border-dashed pt-2;
+		@apply mt-8! border-t border-dashed;
 
-		#footnote-label {
+		/* #footnote-label {
 			@apply hidden;
-		}
+		} */
 	}
 }
