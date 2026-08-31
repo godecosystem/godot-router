@@ -1,0 +1,5 @@
+# Site-specific navigation and branding
+
+src/lib/docs/server/navigation/doc-navigation.config.ts
+src/lib/components/docs/header/header-logo.svelte
+src/lib/components/logo/

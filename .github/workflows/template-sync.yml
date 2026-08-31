@@ -42,7 +42,9 @@ jobs:
           branch='chore/template-sync'
           git checkout -B "$branch"
 
-          while IFS= read -r managed_path; do
+          ignore_file="$target_path/.templatesyncignore"
+
+          while IFS= read -r managed_path || [[ -n "$managed_path" ]]; do
             [[ -n "$managed_path" && "$managed_path" != \#* ]] || continue
             if [[ "$managed_path" = /* || "$managed_path" =~ (^|/)\.\.(/|$) ]]; then
               echo "Invalid managed path: $managed_path" >&2
@@ -52,9 +54,36 @@ jobs:
             source_item="$source_path/$managed_path"
             target_item="$target_path/$managed_path"
 
+            skip_managed_path=false
+            directory_excludes="$(mktemp)"
+            if [[ -f "$ignore_file" ]]; then
+              while IFS= read -r ignored_path || [[ -n "$ignored_path" ]]; do
+                [[ -n "$ignored_path" && "$ignored_path" != \#* ]] || continue
+                ignored_path="${ignored_path#/}"
+                ignored_path="${ignored_path%/}"
+                if [[ "$ignored_path" =~ (^|/)\.\.(/|$) ]]; then
+                  echo "Invalid ignored path: $ignored_path" >&2
+                  exit 1
+                fi
+
+                managed_root="${managed_path%/}"
+                if [[ "$managed_root" == "$ignored_path" || "$managed_root" == "$ignored_path/"* ]]; then
+                  skip_managed_path=true
+                  break
+                fi
+                if [[ "$ignored_path" == "$managed_root/"* ]]; then
+                  echo "/${ignored_path#"$managed_root/"}" >> "$directory_excludes"
+                fi
+              done < "$ignore_file"
+            fi
+
+            if [[ "$skip_managed_path" == true ]]; then
+              continue
+            fi
+
             if [[ -d "$source_item" ]]; then
               mkdir -p "$target_item"
-              rsync --archive --delete "$source_item/" "$target_item/"
+              rsync --archive --delete --exclude-from="$directory_excludes" "$source_item/" "$target_item/"
             elif [[ -f "$source_item" ]]; then
               mkdir -p "$(dirname "$target_item")"
               cp "$source_item" "$target_item"
