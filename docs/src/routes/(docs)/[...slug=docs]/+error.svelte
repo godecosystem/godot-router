@@ -4,7 +4,7 @@
 	import { slide } from 'svelte/transition';
 	import { getSearch, type SearchResult } from '$ui/search-dialog';
 	import siteConfig from '$lib/configuration/site.config';
-	import ErrorPage from '../../+error.svelte';
+	import ErrorPage from '$components/docs/error-page.svelte';
 	import DocIcon from '$components/icon';
 	import Button from '$ui/button';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
@@ -34,7 +34,7 @@
 	<title>Error {page.status} - {siteConfig.name}</title>
 </svelte:head>
 
-<ErrorPage>
+{#snippet suggestions()}
 	{#if results && results.size}
 		<div
 			data-slot="card-content"
@@ -69,4 +69,6 @@
 			</div>
 		</div>
 	{/if}
-</ErrorPage>
+{/snippet}
+
+<ErrorPage {suggestions} />

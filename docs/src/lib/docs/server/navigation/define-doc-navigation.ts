@@ -1,5 +1,3 @@
-import type { Pathname } from '$app/types';
-
 type Icon = {
 	/**
 	 * The icon to display next to the title of a tab, group, or page.

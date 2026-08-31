@@ -8,4 +8,4 @@ export type {
 	BuiltDocRecord,
 	DocsManifestData,
 	DocLayoutData
-} from '../../src/lib/docs/server/types';
+} from '../../src/lib/docs/server/types/index.ts';
