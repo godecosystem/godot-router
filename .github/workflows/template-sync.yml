@@ -27,6 +27,7 @@ jobs:
       - name: Sync template-owned paths
         id: sync
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SOURCE_REPOSITORY: https://github.com/BranDenn/SvelDocs.git
         run: |
           if [[ "$SVELDOCS_PATH" = /* || "$SVELDOCS_PATH" =~ (^|/)\.\.(/|$) ]]; then
@@ -39,8 +40,20 @@ jobs:
           source_path="$(mktemp -d)"
           git clone --depth 1 "$SOURCE_REPOSITORY" "$source_path"
 
-          branch='chore/template-sync-v2'
-          git checkout -B "$branch"
+          base_commit="$(git rev-parse HEAD)"
+          branch="$(
+            gh pr list \
+              --state open \
+              --base "$GITHUB_REF_NAME" \
+              --json headRefName \
+              --jq 'map(select(.headRefName | startswith("chore/template-sync-"))) | .[0].headRefName // ""'
+          )"
+          if [[ -n "$branch" ]]; then
+            git fetch origin "$branch:refs/remotes/origin/$branch"
+          else
+            branch="chore/template-sync-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          fi
+          git checkout -B "$branch" "$base_commit"
 
           ignore_file="$target_path/.templatesyncignore"
 
@@ -113,7 +126,15 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HEAD_BRANCH: ${{ steps.sync.outputs.branch }}
         run: |
-          if gh pr view "$HEAD_BRANCH" >/dev/null 2>&1; then
+          open_prs="$(
+            gh pr list \
+              --state open \
+              --base "$GITHUB_REF_NAME" \
+              --head "$HEAD_BRANCH" \
+              --json number \
+              --jq 'length'
+          )"
+          if [[ "$open_prs" != '0' ]]; then
             exit 0
           fi
 
