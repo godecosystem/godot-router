@@ -1,0 +1,22 @@
+# Framework directories
+plugins/
+src/lib/components/
+src/lib/docs/
+src/lib/markdown/
+src/params/
+src/routes/
+src/types/
+
+# Framework entry points and configuration
+src/app.d.ts
+src/app.html
+src/lib/utils.ts
+eslint.config.js
+package.json
+bun.lockb
+svelte.config.js
+tsconfig.json
+vite.config.ts
+
+# Keep this ownership manifest in downstream repositories
+.templatesyncpaths
